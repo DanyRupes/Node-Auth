@@ -1,0 +1,45 @@
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({extended:true}))
+app.use(bodyParser.json())
+
+// app.use() //middleware function use
+
+const middleWare =async (req, res, next)=>{ //each requests
+    // app.param('user', async ()=>{
+        console.log(req.params)
+        // req.user = req.params.user
+        next()
+        // res.send({user:req.params})
+    // })
+
+    // res.send("mid base") //directly send as response
+}
+
+
+app.use(middleWare) //run for every req
+
+// 1.
+// app.get('/user/:user',(req, res)=>res.send({params:req.params.user, query:req.query}))
+// http://localhost:8080/user/AKJDFNADKJF?data=norifications data&body=body stream  
+// {
+//     "params": "AKJDFNADKJF",
+//     "query": {
+//         "data": "norifications data",
+//         "body": "body stream"
+//     }
+// }
+
+
+
+// passing the base router to all subs
+// /with middleware integrated. middleware runs for every req and responses. setting middleware to app
+//  and passing same app to all routes.
+require('./routes/v1')(app)
+
+
+
+
+
+app.listen(8080, console.log("http://localhost:8080"))

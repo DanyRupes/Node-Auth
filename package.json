@@ -1,0 +1,16 @@
+{
+  "name": "node_auth_middleware_practise",
+  "version": "1.0.0",
+  "description": "mid practise",
+  "main": "index.js",
+  "author": "danyrupes <danyrupes26@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "nodemon": "^1.19.1"
+  }
+}
