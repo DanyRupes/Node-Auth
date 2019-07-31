@@ -14,17 +14,14 @@ let {
   MONGO_URI
 } = require("./config/keys");
 
-let sess = {
-  secret: "$RYHG354354FU546fvju5%$#$%#*&buyfesd",
+
+var sess = {
+  secret: "$RYHG354354FU546fvju5%$#$%#*&buyfesd", 
   cookie: {},
   resave: false,
-  saveUninitialized: true,
-  proxy: true,
-  secure: false,
-  ephemeral: false,
-  store: app.store,
-  unset: 'destroy'
+  saveUninitialized: true
 };
+
 
 const autho_strategy = new passport_auth0(
   {
