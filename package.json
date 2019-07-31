@@ -1,16 +1,25 @@
 {
   "name": "node_auth_middleware_practise",
   "version": "1.0.0",
-  "description": "mid practise",
+  "description": "node middleware practise",
   "main": "index.js",
   "author": "danyrupes <danyrupes26@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon server.js"
+    "dev": "nodemon -r dotenv/config server.js"
   },
   "dependencies": {
+    "axios": "^0.19.0",
     "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.4",
     "express": "^4.17.1",
-    "nodemon": "^1.19.1"
+    "express-session": "^1.16.2",
+    "mongoose": "^5.6.7",
+    "nodemon": "^1.19.1",
+    "passport": "^0.4.0",
+    "passport-auth0": "^1.1.0"
+  },
+  "devDependencies": {
+    "dotenv": "^8.0.0"
   }
 }

@@ -1,21 +1,60 @@
-const express = require('express')
-const app = express()
-const bodyParser = require('body-parser')
-app.use(bodyParser.urlencoded({extended:true}))
-app.use(bodyParser.json())
+// require('dotenv').config({path: '.env'}) //node -r dotenv/env server.js  remove dotenv from file run with preload
+const express = require("express");
+const app = express();
+const passport = require("passport");
+const passport_auth0 = require("passport-auth0");
+const path = require("path");
+var cookieParser = require('cookie-parser');
+const session = require('express-session');
 
-const middleWare =async (req, res, next)=>{
-        req.user = "verified User"
-        next()
+let {
+        AUTH0_CLIENT_ID,
+        AUTH0_CLIENT_SECRET,
+        AUTH0_DOMAIN, MONGO_URI
+} = require("./config/keys");
+
+let sess = {
+        secret: '$RYHG354354FU546fvju5%$#$%#*&buyfesd',
+        cookie: {},
+        resave: false,
+        saveUninitialized: true
 }
 
+const autho_strategy = new passport_auth0(
+        {
+                domain: AUTH0_DOMAIN,
+                clientID: AUTH0_CLIENT_ID,
+                clientSecret: AUTH0_CLIENT_SECRET,
+                callbackURL: "http://localhost:8080/login_success"
+        },
+        function (accessToken, refreshToken, extraParams, profile, done) {
+                console.log(profile)
+                return done(null, profile);
+        }
+);
 
-app.use(middleWare)
-
-require('./routes/v1')(app)
-
-
-
+// middlewares
+passport.use(autho_strategy);
+passport.serializeUser((user, done)=>done(null, user))
+passport.deserializeUser((user, done)=>done(null, user))
 
 
-app.listen(8080, console.log("http://localhost:8080"))
+
+
+app.use(session(sess))
+app.use(cookieParser());
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "views")));
+
+
+
+// routes - main  
+  require("./routes/v1")(app)
+  
+
+const PORT = process.env.PORT;
+
+app.listen(PORT, console.log(`http://localhost:${PORT}`, process.env.NODE_ENV));
