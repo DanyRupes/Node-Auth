@@ -10,7 +10,7 @@ const passport = require('passport')
     }
 
  const dashboard_home  =  async (req, res, next) => {
-     console.log(req.user)
+     console.log(req.user.user_id)
     res.sendFile(`${path.join(__dirname, '../../views/dashboard.html')}`) 
     }
 
