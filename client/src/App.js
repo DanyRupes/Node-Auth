@@ -19,10 +19,11 @@ class App extends React.Component {
               <a href='/login'>
                 <h1>Do Auth0 Login</h1>
               </a>
-              <div style={{display:'flex', justifyContent:'space-between', minWidth:'30rem'}}>
+              <div style={{display:'flex', justifyContent:'space-between', minWidth:'35rem'}}>
                 <Link to="/home" >Home</Link>
                 <Link to="/blogs">Blogs</Link>
                 <a href="/login" >Login</a>
+                <a href="/signup" >Signup</a>
                 <a href="/logout" >Logout</a>
               </div>
             </header>
