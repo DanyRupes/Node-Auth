@@ -1,5 +1,8 @@
 
+const jwtAuthz = require('express-jwt-authz')
 
+
+const getDetailsScope = jwtAuthz(['read:client_grants'])
 
 
 const getDetails = async (req, res) => {
@@ -7,4 +10,4 @@ const getDetails = async (req, res) => {
 }
 
 
-module.exports = { getDetails }
+module.exports = { getDetails, getDetailsScope }

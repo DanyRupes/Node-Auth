@@ -1,78 +1,57 @@
 require('dotenv').config({ path: '.env' }) //node -r dotenv/env server.js  remove dotenv from file run with preload
 const express = require("express");
 const app = express();
-const passport = require("passport");
-const passport_auth0 = require("passport-auth0");
 const path = require("path");
-const cookieParser = require("cookie-parser");
-const session = require("express-session");
 const auth = require('./routes/v1/auth')
-
-let {
-  AUTH0_CLIENT_ID,
-  AUTH0_CLIENT_SECRET,
-  AUTH0_DOMAIN,
-  AUTH0_SECRET
-} = require("./config/keys");
+const profile = require('./routes/v1/profile')
+// const checkJwt = require('./middleware/auht0-jwt').checkJwt()
+const axios  = require('axios')
 
 
-var sess = {
-  secret: AUTH0_SECRET,
-  cookie: {},
-  resave: false,
-  saveUninitialized: true
-};
+// app.use(express.static(path.join (__dirname+'/client/build')));
+// require('./routes/v1/auth')(app)
+// app.use(checkJwt)
+
+// require('./routes/v1/')(app)
+
+const jwt = require('express-jwt');
+const jwtAuthz = require('express-jwt-authz');
+const jwksRsa = require('jwks-rsa');
 
 
-const autho_strategy = new passport_auth0(
-  {
-    domain: AUTH0_DOMAIN,
-    clientID: AUTH0_CLIENT_ID,
-    clientSecret: AUTH0_CLIENT_SECRET,
-    callbackURL: "http://localhost:8080/login_success"
-  },
-  function (accessToken, refreshToken, extraParams, profile, done) {
-    // console.log(profile);
-    return done(null, profile);
-  }
-);
+const checkJwt = jwt({
+  secret: jwksRsa.expressJwtSecret({
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+    jwksUri: `https://dev-dany.auth0.com/.well-known/jwks.json`
+  }),
+  audience: 'https://dev-dany.auth0.com/api/v2/',
+  issuer: `https://dev-dany.auth0.com/`,
+  algorithms: ['RS256']
+});
 
-app.use(express.static(path.join (__dirname+'/client/build')));
-secureMyServer = (req, res, next) => {
-  if(req.path=='/') {
-    res.sendFile(__dirname + '/client/build/index.html')
-  }
-  else if (!req.user) {
-    res.redirect('/login')
-  } 
-  else {
-    next()
-  }
-};
+const checkScopes = jwtAuthz([ 'read:messages' ]);
 
-// middlewares
-passport.use(autho_strategy);
-passport.serializeUser((user, done) => done(null, user));
-passport.deserializeUser((user, done) => done(null, user));
+app.get('/profile', checkJwt, checkScopes, function(req, res) {
+  res.json({
+    message: 'Hello from a private endpoint! You need to be authenticated and have a scope of read:messages to see this.'
+  });
+});
 
-app.use(session(sess));
-app.use(cookieParser());
-app.use(passport.initialize());
-app.use(passport.session());
-// require("./routes/v1/auth")(app);
-app.get('/login', passport.authenticate('auth0', { scope: 'openid email profile' }))
-app.get('/login_success', auth.login_success)
-app.get("/logout", auth.logout)
-app.use(secureMyServer);
+app.get('/genToken',async (req, res)=>{
+    let token = await axios.post('https://dev-dany.auth0.com/oauth/token',{
+        "grant_type":"client_credentials" ,
+        "scope":"read:users",
+       "client_id": "NXy9uBtaoI3r6QBAGB0fckuk0iiNpF8x",
+       "client_secret": "kCkOl5luh_vYd7Fj0dGq4L5fGl3IRWrg-L82B9LBLQTkaiXKcAossnZth-0dM-iA",
+       "audience": "https://dev-dany.auth0.com/api/v2/"
+   }, {headers:{'Content-Type':'application/json'}})
 
-
-require("./routes/v1")(app);
-
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+   res.send(token.data)
+})
 
 // routes - main
-
 const PORT = process.env.PORT;
 
 app.listen(PORT, console.log(`http://localhost:${PORT}`, process.env.NODE_ENV));

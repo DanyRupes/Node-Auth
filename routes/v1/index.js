@@ -1,9 +1,7 @@
 const path = require('path')
 const express = require('express')
 const blog = require('./blogs')
-const profile = require('./profile')
-const passport = require('passport')
-var util = require('util');
+const {getDetails, getDetailsScope, } = require('./profile')
 
 module.exports = app => {
 
@@ -11,5 +9,5 @@ module.exports = app => {
     app.get('/listBlogs', blog.listBlogs)
 
     // profile
-    app.get('/profile', profile.getDetails)
+    app.get('/profile', getDetailsScope, getDetails)
 }
