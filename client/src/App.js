@@ -6,28 +6,21 @@ import { Switch, Route, Link } from 'react-router-dom'
 import Home from './components/Home/Home';
 import Profile from './components/Profile/Profile';
 import Blogs from './components/Blogs/Blogs';
+import Main from './components/MainPage/main';
 
 class App extends React.Component {
 
 
+  componentDidMount(){
+
+  }
 
   render() {
     return (
       <Switch>
           <div className="App">
-            <header className="App-header">
-              <a href='/login'>
-                <h1>Do Auth0 Login</h1>
-              </a>
-              <div style={{display:'flex', justifyContent:'space-between', minWidth:'35rem'}}>
-                <Link to="/home" >Home</Link>
-                <Link to="/blogs">Blogs</Link>
-                <a href="/login" >Login</a>
-                <a href="/signup" >Signup</a>
-                <a href="/logout" >Logout</a>
-              </div>
-            </header>
           <Switch>
+            <Route exact path="/" component={Main} />
             <Route exact path="/home" component={Home} />
             <Route exact path="/profile" component={Profile} />
             <Route exact path="/blogs" component={Blogs} />

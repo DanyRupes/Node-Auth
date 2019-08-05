@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Header from '../reuse/header/header';
 
 class Blogs extends Component {
 
@@ -18,6 +19,7 @@ class Blogs extends Component {
     render() {
         return (
             <div>
+                <Header />
                 <h1>Blogs</h1>
                 <ul>
                 {

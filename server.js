@@ -37,9 +37,12 @@ const autho_strategy = new passport_auth0(
   }
 );
 
+app.use(express.static(path.join (__dirname+'/client/build')));
 secureMyServer = (req, res, next) => {
-  console.log(req.path)
-  if (!req.user) {
+  if(req.path=='/') {
+    res.sendFile(__dirname + '/client/build/index.html')
+  }
+  else if (!req.user) {
     res.redirect('/login')
   } 
   else {
@@ -58,27 +61,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 // require("./routes/v1/auth")(app);
 app.get('/login', passport.authenticate('auth0', { scope: 'openid email profile' }))
-app.get('/signup', (req, res)=>{
-  var request = require("request");
-
-var options = {
-  method: 'POST',
-  url: `https://${AUTH0_DOMAIN}/oauth/token`,
-  headers: {'content-type': 'application/x-www-form-urlencoded'},
-  form: {
-    grant_type: 'client_credentials',
-    client_id: AUTH0_CLIENT_ID,
-    client_secret: AUTH0_CLIENT_SECRET,
-    audience: 'wifXHbgwF4A05rmbqRmdRy5b5r60C5Ch'
-  }
-};
-
-request(options, function (error, response, body) {
-  if (error) throw new Error(error);
-
-  console.log(body);
-});
-})
 app.get('/login_success', auth.login_success)
 app.get("/logout", auth.logout)
 app.use(secureMyServer);
