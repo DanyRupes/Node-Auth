@@ -6,7 +6,7 @@ const getDetailsScope = jwtAuthz(['read:client_grants'])
 
 
 const getDetails = async (req, res) => {
-    res.send({ details:{email:"stil", username:"st"} })
+    res.send({ users:{email:"stil", username:"st"} })
 }
 
 
