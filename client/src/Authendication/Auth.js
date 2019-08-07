@@ -11,7 +11,7 @@ export default class Auth {
     redirectUri:  'http://localhost:3000/login_success/',
     audience: 'https://dev-dany.auth0.com/api/v2/',
     responseType: 'token id_token',
-    scope: 'openid profile email  '
+    scope: 'openid profile email'
   });
 
   login = () => {
@@ -19,22 +19,34 @@ export default class Auth {
   }
 
 
-  handleAuthentication = () => {
-    this.auth0.parseHash((err, authResult) => {
-      console.log(authResult, window.location)
-      if (authResult && authResult.accessToken && authResult.idToken) {
-        this.setSession(authResult);
-        window.location.href = '/galary'
-      } else if (err) {
-        // window.location.href = '/'
-        console.log(err);
+  handleAuthentication =async () => {
+    this.auth0.parseHash(async (err, authResult) => {
+      
+      try {
+        let { accessToken, idToken, idTokenPayload} = authResult
+        let {email, picture, name } = idTokenPayload
+        console.log(authResult)
+        
+        if (authResult && accessToken && idToken) {
+          let userLogin = await axios.post('/login', {
+            idToken,email
+          },{headers:{Authorization:`Bearer ${accessToken}`}})
+  
+          if(userLogin){console.log("user created"); if(userLogin.data.msg=='SIGNEDUP')alert('User Created')}
+  
+          this.setSession(authResult);
+          window.location.href = '/galary'
+        } else if (err) {
+          window.location.href = '/'
+          console.log(err);
+        }
       }
-    });
+      catch(e) {console.log(e);window.location.href = '/'}
+      });
   }
 
 
   setSession = (authResult) => {
-
     let expiresAt = JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime());
     localStorage.setItem('access_token', authResult.accessToken);
     localStorage.setItem('id_token', authResult.idToken);
@@ -45,7 +57,6 @@ export default class Auth {
 
 
   logout = () => {
-
     localStorage.removeItem('access_token');
     localStorage.removeItem('id_token');
     localStorage.removeItem('expires_at');
@@ -56,17 +67,16 @@ export default class Auth {
 
 
 
-  isAuthenticated = async () => {
-
+  isAuthenticated =   async () => {
     let expiresAt = JSON.parse(localStorage.getItem('expires_at'));
     let exTime =  new Date().getTime() < expiresAt;
 
     try{
-      // let auth = await axios.get('/auth', {headers:await headers()})
-      return true
+      let auth = await axios.get('/auth', {headers:await this.headers()})
+      if(auth.data) {console.log(auth.data);return true}
     }
     catch(err){
-      console.log("Errr",err)
+      // console.log("Errr",err)
       return false
 
     }
@@ -78,5 +88,12 @@ export default class Auth {
 			throw new Error('No access token found');
 		}
 		return accessToken;
-	}
+  }
+  
+
+  headers = async () => ({
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    Authorization: `Bearer ${await this.getAccessToken()}`
+  });
 }

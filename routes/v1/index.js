@@ -1,13 +1,16 @@
 const path = require('path')
 const express = require('express')
-const blog = require('./blogs')
-const {getDetails, getDetailsScope, } = require('./profile')
+const Gallary = require('./gallary')
+const {getDetails, getDetailsScope, } = require('./user')
 
 module.exports = app => {
 
-    // blogs
-    app.get('/listBlogs', blog.listBlogs)
+    app.get ('/auth', (req, res)=>res.send('fine'))
+
+    // Gallary
+    app.get('/user/gallary', Gallary.userGallary)
+    app.get('/addfile', Gallary.addFile)
 
     // profile
-    app.get('/profile', getDetailsScope, getDetails)
+    app.get('/profile', getDetails)
 }

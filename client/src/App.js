@@ -9,6 +9,7 @@ import Dashboard from './components/Dashboard/dash';
 import Main from './components/MainPage/main';
 import Auth from './Authendication/Auth'
 import Callback from './Callback'
+import history from './history'
 
 const auth = new Auth();
 
@@ -25,9 +26,10 @@ class App extends React.Component {
 
 
 
+
   async componentDidMount() {
     if(await auth.isAuthenticated()) this.setState({isAuthenticated:true, isLoading:false})
-    console.log(this.props  )
+    else this.setState({isLoading:false})
   }
 
   handleAuthentication = (nextState, replace) => {
@@ -37,18 +39,21 @@ class App extends React.Component {
   }
   render() {
     const { isAuthenticated, isLoading} = this.state
+    if(isLoading) return <Callback />
+
+
     return (
-      <Switch>
-        <div className="App">
-            <Route exact path="/" render={(props) => <Main model={Main} auth={auth} {...props} />} />
+      <Switch >
+        <div className="App" >
+            <Route exact path="/" render={(props) => <Main model={Main} auth={auth} {...props}  />} />
             <Route exact path="/login_success" render={(props) => {
               this.handleAuthentication(props);
               return <Callback {...props} />
             }}
             />
-            <Route exact path="/galary" render={(props)=> <Home gal="gal" />} />
-            <Route exact path="/dashboard" component={Dashboard} />
-            <Route exact path="/profile" component={Profile} />
+            <Route exact path="/gallary" render={(props)=> <Home  isAuthenticated {...props} />} />
+            <Route exact path="/dashboard" component={Dashboard} isAuthenticated />
+            <Route exact path="/profile" component={Profile} isAuthenticated />
           
         </div>
       </Switch>

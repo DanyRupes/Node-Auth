@@ -1,0 +1,7 @@
+.card-img-top {
+    height: 11em;
+}
+.h-img-card:hover {
+    transform: rotateY(10deg);
+
+}

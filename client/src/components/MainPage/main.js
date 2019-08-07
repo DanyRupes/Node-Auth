@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Header from '../reuse/header/header';
-import { Link } from 'react-router-dom'
 
 
 class Main extends Component {
@@ -21,13 +19,14 @@ class Main extends Component {
         return (
             <div>
                 <header className="App-header">
+
                     <div style={{ display: 'flex', justifyContent: 'flex-end', minWidth: '35rem', padding: '1em', fontSize: '20px' }}>
-                    <a href="#" onClick={this.handleAuth}>
-                         login
+                        <a style={{ color: 'white' }} href="#" onClick={this.handleAuth}>
+                            login
                     </a>
                     </div>
                 </header>
-                <h1>Welcome</h1>
+                <h1>Welcome to Explorer</h1>
             </div>
         )
     }
