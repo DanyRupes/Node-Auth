@@ -35,7 +35,7 @@ export default class Auth {
           if(userLogin){console.log("user created"); if(userLogin.data.msg=='SIGNEDUP')alert('User Created')}
   
           this.setSession(authResult);
-          window.location.href = '/galary'
+          window.location.href = '/gallary'
         } else if (err) {
           window.location.href = '/'
           console.log(err);

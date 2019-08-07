@@ -9,7 +9,7 @@ module.exports = app => {
 
     // Gallary
     app.get('/user/gallary', Gallary.userGallary)
-    app.get('/addfile', Gallary.addFile)
+    app.put('/addfile', Gallary.addFile)
 
     // profile
     app.get('/profile', getDetails)

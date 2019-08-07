@@ -14,18 +14,20 @@ class Home extends Component {
 
     handleImageSelect = async(ev)=>{
         let selectedFile = ev.target.files[0]
+        console.log(selectedFile.value)
         // console.log(URL.createObjectURL(selectedFile))
         this.setState({selectedFile, imageName:this.state.imageName==''?selectedFile.name : this.state.imageName})
     }
 
     handleSubmit = async()=>{
         let {imageName, selectedFile} = this.state
-        
         let data = {name:imageName, url:URL.createObjectURL(selectedFile)}
 
         try{
-            let upF = await axios.post('/addfile', data, {headers:await auth.headers()})
+            let upF = await axios.put('/addfile', data, {headers:await auth.headers()})
             console.log(upF.data.details)
+            alert("Image Uploaded")
+            this.setState({selectedFile:'', imageName:''})
         }
 
         catch(e){
@@ -36,7 +38,7 @@ class Home extends Component {
 
     render() {
 
-        let  { imageName } = this.state
+        let  { imageName, selectedFile } = this.state
         return (
             <div>
                 <Header />
@@ -53,7 +55,7 @@ class Home extends Component {
                     <Input type="file" name="file" id="up-image" onChange={this.handleImageSelect} />
                 </FormGroup>
 
-                <Button onClick={this.handleSubmit}>Submit</Button>
+                <Button disabled={selectedFile?false:true} onClick={this.handleSubmit}>Submit</Button>
             </Form>
             </div>
             </div>
