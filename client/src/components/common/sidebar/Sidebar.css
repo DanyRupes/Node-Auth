@@ -16,7 +16,7 @@
 }
 
 #MenuContainer {
-    width: 10vw;
+    width: calc(100% - 85%);
     height: 95vh;
     padding: 1em;
     background-color: #FFE600;
